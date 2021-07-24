@@ -68,7 +68,7 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 @app.get("/contests/{contest_id}")
 def read_contests(contest_id: int):
-    return models.Contest.get_by_id(contest_id)
+    return models.Contest.get_by_id(contest_id).__data__ 
 
 @app.get("/contests/")
 async def read_contests():
@@ -79,7 +79,6 @@ async def read_contests():
 @app.post("/contests/")
 async def create_contests(name:str,description:str):
     contest = models.Contest.create(name=name,discription=discription)
-    
     return contest
 
 @app.get("/contests/{contest_id}/codes")
@@ -97,9 +96,7 @@ def read_contest_submitted(contest_id: int,User = Depends(get_current_user)):
 #User 関連
 @app.get("/users/{user_id}")
 def read_user(user_id: int):
-    return models.User.get_by_id(user_id)
-
-
+    return models.User.get_by_id(user_id).__data__ 
 
 @app.post("/users/")
 async def create_user(user_in: UserIn):
@@ -116,7 +113,6 @@ def read_users():
     return [r.__data__ for r in ret]
 
 
-
 # Code 関連
 @app.post("/codes/", status_code=201)
 async def create_codes(contest_id:int,current_user: User = Depends(get_current_user), file: UploadFile = File(...)):
@@ -130,7 +126,7 @@ async def create_codes(contest_id:int,current_user: User = Depends(get_current_u
 
 @app.get("/codes/{code_id}")
 async def read_code(code_id: int):
-    return models.Code.get_by_id(code_id)
+    return models.Code.get_by_id(code_id).__data__ 
 
 @app.get("/codes/")
 async def read_codes():
@@ -145,7 +141,7 @@ async def create_room(contest_id:int):
 
 @app.get("/rooms/{room_id}")
 async def read_room(room_id: int):
-    return models.Room.get_by_id(room_id)
+    return models.Room.get_by_id(room_id).__data__ 
 
 @app.get("/rooms/")
 async def read_rooms():
@@ -160,7 +156,7 @@ async def create_entry(room_id:int,code_id:int):
 
 @app.get("/entries/{entry_id}")
 async def read_entry(entry_id: int):
-    return models.Entry.get_by_id(entry_id)
+    return models.Entry.get_by_id(entry_id).__data__ 
 
 @app.get("/entries/")
 async def read_entry():
