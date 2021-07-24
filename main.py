@@ -7,8 +7,12 @@ import models
 import uvicorn
 import datetime
 import shutil
+from codeparty_simulator.exec import execute
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -122,7 +126,7 @@ async def create_codes(contest_id:int,current_user: User = Depends(get_current_u
     
     code = models.Code.create(user_id=current_user.id,contest_id= contest_id,time = datetime.datetime.now())
 
-    with open("/static/json/"+str(code.id)+".json", "wb") as buffer:
+    with open("./static/submit/"+str(code.id)+".py", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     return code.__data__ 
@@ -151,6 +155,12 @@ async def read_rooms():
     ret = models.Room.select()
     return [r.__data__ for r in ret]
 
+
+@app.get("/rooms/{room_id}/run")
+async def run_room(room_id: int):
+    json = execute(["codeparty_simulator.players.sample2"]*4,room_id)
+    return json
+
 ##Entry 関連
 @app.post("/entries/", status_code=201)
 async def create_entry(room_id:int,code_id:int):
@@ -165,17 +175,6 @@ async def read_entry(entry_id: int):
 async def read_entry():
     ret = models.Entry.select()
     return [r.__data__ for r in ret]
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
