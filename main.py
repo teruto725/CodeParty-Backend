@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI ,  File, UploadFile
+from fastapi import Depends, FastAPI ,  File, UploadFile,Form
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth import get_current_user, get_current_user_with_refresh_token, create_tokens, authenticate
@@ -121,7 +121,7 @@ def read_users():
 
 
 # Code 関連
-@app.post("/codes/", status_code=201)
+@app.post("/codes/")
 async def create_codes(contest_id:int, file: UploadFile = File(...),current_user:User = Depends(get_current_user)):
     print(current_user,contest_id,file)
     code = models.Code.create(user_id=current_user.id,contest_id= contest_id,time = datetime.datetime.now())
