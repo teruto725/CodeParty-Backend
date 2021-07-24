@@ -1,12 +1,19 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI ,  File, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth import get_current_user, get_current_user_with_refresh_token, create_tokens, authenticate
+from starlette.middleware.cors import CORSMiddleware # 追加
 import models
 import uvicorn
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,   # 追記により追加
+    allow_methods=["*"],      # 追記により追加
+    allow_headers=["*"]       # 追記により追加
+)
 
 class Token(BaseModel):
     access_token: str
@@ -75,3 +82,7 @@ def read_todos():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
+
+@app.post("/codes/", status_code=201)
+async def create_codes(current_user: User = Depends(get_current_user), file: UploadFile = File(...)):
+    return {"filename": file.filename, 'properties': properties}
