@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth import get_current_user, get_current_user_with_refresh_token, create_tokens, authenticate
 import models
+import uvicorn
 
 app = FastAPI()
 
@@ -47,3 +48,6 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 async def read_contests():
     ret = models.Contest.select()
     return [r for r in ret]
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8080)
