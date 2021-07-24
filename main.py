@@ -62,7 +62,11 @@ def read_todo(user_id: int):
 @app.post("/users/")
 async def create_todo(user_in: UserIn):
     user = models.User.create(name=user_in.name,password= user_in.password,is_admin = False)
-    return models.User.get_by_id(user.id)
+    auth = authenticate(user.name, user.password)
+    ret_dict = {}
+    ret_dict["name"] = user.name
+    ret_dict["tokens"] = create_tokens(user.id)
+    return ret_dict
 
 @app.get("/users/")
 def read_todos():
