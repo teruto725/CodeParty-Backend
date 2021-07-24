@@ -142,7 +142,7 @@ async def read_codes():
 
 ##Room 関連
 @app.post("/rooms/", status_code=201)
-async def create_room(contest_id:int):
+async def create_room(contest_id:int,current_user:User = Depends(get_current_user)):
     room = models.Room.create(contest_id =contest_id)
     return room.__data__ 
 
