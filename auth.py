@@ -42,7 +42,7 @@ def create_tokens(user_id: int):
 
 def get_current_user_from_token(token: str, token_type: str):
     """tokenからユーザーを取得"""
-    print("ok"))
+    print("ok")
     # トークンをデコードしてペイロードを取得。有効期限と署名は自動で検証される。
     payload = jwt.decode(token, 'SECRET_KEY123', algorithms=['HS256'])
 
