@@ -66,8 +66,8 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 #Contest 関連
 
-@app.get("/users/{contest_id}")
-def read_user(contest_id: int):
+@app.get("/contests/{contest_id}")
+def read_contests(contest_id: int):
     return models.Contest.get_by_id(contest_id)
 
 @app.get("/contests/")
@@ -81,6 +81,14 @@ async def create_contests(name:str,description:str):
     contest = models.Contest.create(name=name,discription=discription)
     
     return contest
+
+@app.get("/contests/{contest_id}/codes")
+def read_contest_codes(contest_id: int):
+    return models.Code.select().where(models.Code.contest_id==contest_id)
+
+@app.get("/contests/{contest_id}/rooms")
+def read_contest_rooms(contest_id: int):
+    return models.Room.select().where(models.Room.contest_id==contest_id)
 
 
 #User 関連
