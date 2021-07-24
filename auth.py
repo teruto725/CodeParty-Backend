@@ -42,6 +42,7 @@ def create_tokens(user_id: int):
 
 def get_current_user_from_token(token: str, token_type: str):
     """tokenからユーザーを取得"""
+    print("ok"))
     # トークンをデコードしてペイロードを取得。有効期限と署名は自動で検証される。
     payload = jwt.decode(token, 'SECRET_KEY123', algorithms=['HS256'])
 
@@ -58,6 +59,7 @@ def get_current_user_from_token(token: str, token_type: str):
         raise HTTPException(status_code=401, detail='リフレッシュトークン不一致')
 
     return user
+
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """アクセストークンからログイン中のユーザーを取得"""
     print(token)
@@ -66,4 +68,5 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme)):
     """リフレッシュトークンからログイン中のユーザーを取得"""
+    print(token,"refresh")
     return get_current_user_from_token(token, 'refresh_token')
