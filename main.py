@@ -3,7 +3,7 @@ from fastapi import Depends, FastAPI ,  File, UploadFile,Form
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth import get_current_user, get_current_user_with_refresh_token, create_tokens, authenticate
-from starlette.middleware.cors import CORSMiddleware # 追加
+from starlette.middleware.cors import CORSMiddleware
 import models
 import uvicorn
 import datetime
