@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+
 from fastapi import Depends, FastAPI ,  File, UploadFile,Form
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -17,9 +17,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,   # 追記により追加
-    allow_methods=["*"],      # 追記により追加
-    allow_headers=["*"]       # 追記により追加
+    allow_credentials=True,   #
+    allow_methods=["*"],      # 
+    allow_headers=["*"]       # 
 )
 
 class Token(BaseModel):
@@ -49,7 +49,6 @@ def return_data(ret):
 
 @app.post("/token")
 async def login(user_in: UserIn):
-    """トークン発行"""
     user = authenticate(user_in.name, user_in.password)
     ret_dict = {}
     ret_dict["name"] = user.name
@@ -59,17 +58,15 @@ async def login(user_in: UserIn):
 
 @app.get("/refresh_token/", response_model=Token)
 async def refresh_token(current_user: User = Depends(get_current_user_with_refresh_token)):
-    """リフレッシュトークンでトークンを再取得"""
     return create_tokens(current_user.id)
 
 
 @app.get("/users/me/", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_user)):
-    """ログイン中のユーザーを取得"""
     return current_user
 
 
-#Contest 関連
+#Contest 
 
 @app.get("/contests/{contest_id}")
 def read_contests(contest_id: int):
@@ -101,7 +98,7 @@ def read_contest_submitted(contest_id: int,current_user:User = Depends(get_curre
     ret =  models.Code.select().where(models.Code.contest_id==contest_id and models.Code.user_id==current_user.id)
     return [r.__data__ for r in ret]
 
-#User 関連
+#User 
 @app.get("/users/{user_id}")
 def read_user(user_id: int):
     return models.User.get_by_id(user_id).__data__ 
@@ -121,7 +118,7 @@ def read_users():
     return [r.__data__ for r in ret]
 
 
-# Code 関連
+# Code 
 @app.post("/codes/")
 async def create_codes(contest_id:int, file: bytes = File(...),current_user:User = Depends(get_current_user)):
     print(current_user,contest_id,file)
@@ -141,7 +138,7 @@ async def read_codes():
     ret = models.Code.select()
     return [r.__data__ for r in ret]
 
-##Room 関連
+##Room 
 @app.post("/rooms/", status_code=201)
 async def create_room(contest_id:int,current_user:User = Depends(get_current_user)):
     room = models.Room.create(contest_id =contest_id)
