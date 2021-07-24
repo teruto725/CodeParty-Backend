@@ -40,7 +40,7 @@ def create_tokens(user_id: int):
     return {'access_token': access_token, 'refresh_token': refresh_token, 'token_type': 'bearer'}
 
 
-def get_current_user_from_token(token: str, token_type: str):
+async def get_current_user_from_token(token: str, token_type: str):
     """tokenからユーザーを取得"""
     print("ok")
     # トークンをデコードしてペイロードを取得。有効期限と署名は自動で検証される。
