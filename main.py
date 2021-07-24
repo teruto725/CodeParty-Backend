@@ -39,10 +39,10 @@ class UserIn(BaseModel):
     name: str
     password: str
 
-@app.post("/token", response_model=Token)
-async def login(form: OAuth2PasswordRequestForm = Depends()):
+@app.post("/token")
+async def login(user_in: UserIn):
     """トークン発行"""
-    user = authenticate(form.username, form.password)
+    user = authenticate(user_in.name, user_in.password)
     ret_dict = {}
     ret_dict["name"] = user.name
     ret_dict["tokens"] = create_tokens(user.id)
@@ -65,12 +65,12 @@ async def read_contests():
     ret = models.Contest.select()
     return [r for r in ret]
 
-# 単一のTodoを取得
+
 @app.get("/users/{user_id}")
 def read_user(user_id: int):
     return models.User.get_by_id(user_id)
 
-# Todoを登録
+
 @app.post("/users/")
 async def create_user(user_in: UserIn):
     user = models.User.create(name=user_in.name,password= user_in.password,is_admin = False)
@@ -101,7 +101,7 @@ async def create_codes(contest_id:int,current_user: User = Depends(get_current_u
     return code
 
 @app.get("/codes/{code_id}")
-def read_code(code_id: int):
+async def read_code(code_id: int):
     return models.Code.get_by_id(code_id)
 
 @app.get("/codes/")
@@ -116,7 +116,7 @@ async def create_room(contest_id:int):
     return room
 
 @app.get("/rooms/{code_id}")
-def read_room(code_id: int):
+async def read_room(code_id: int):
     return models.Room.get_by_id(code_id)
 
 @app.get("/rooms/")
@@ -131,7 +131,7 @@ async def create_entry(room_id:int,code_id:int):
     return room
 
 @app.get("/entries/{code_id}")
-def read_entry(code_id: int):
+async def read_entry(code_id: int):
     return models.Entry.get_by_id(code_id)
 
 @app.get("/entries/")
