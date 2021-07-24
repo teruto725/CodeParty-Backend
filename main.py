@@ -83,15 +83,18 @@ async def create_contests(name:str,description:str):
 
 @app.get("/contests/{contest_id}/codes")
 def read_contest_codes(contest_id: int):
-    return models.Code.select().where(models.Code.contest_id==contest_id)
+    ret = models.Code.select().where(models.Code.contest_id==contest_id)
+    return [r.__data__ for r in ret]
 
 @app.get("/contests/{contest_id}/rooms")
 def read_contest_rooms(contest_id: int):
-    return models.Room.select().where(models.Room.contest_id==contest_id)
+    ret =  models.Room.select().where(models.Room.contest_id==contest_id)
+    return [r.__data__ for r in ret]
 
 @app.get("/contests/{contest_id}/submitted")
 def read_contest_submitted(contest_id: int,User = Depends(get_current_user)):
-    return models.Code.select().where(models.Code.contest_id==contest_id and models.Code.user_id==current_user.id)
+    ret =  models.Code.select().where(models.Code.contest_id==contest_id and models.Code.user_id==current_user.id)
+    return [r.__data__ for r in ret]
 
 #User 関連
 @app.get("/users/{user_id}")
