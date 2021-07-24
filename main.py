@@ -79,7 +79,7 @@ async def read_contests():
 @app.post("/contests/")
 async def create_contests(name:str,description:str):
     contest = models.Contest.create(name=name,discription=discription)
-    return contest
+    return contest.__data__ 
 
 @app.get("/contests/{contest_id}/codes")
 def read_contest_codes(contest_id: int):
@@ -122,7 +122,7 @@ async def create_codes(contest_id:int,current_user: User = Depends(get_current_u
     with open("/static/json/"+str(code.id)+".json", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return code
+    return code.__data__ 
 
 @app.get("/codes/{code_id}")
 async def read_code(code_id: int):
@@ -137,7 +137,7 @@ async def read_codes():
 @app.post("/rooms/", status_code=201)
 async def create_room(contest_id:int):
     room = models.Room.create(contest_id =contest_id)
-    return room
+    return room.__data__ 
 
 @app.get("/rooms/{room_id}")
 async def read_room(room_id: int):
@@ -152,7 +152,7 @@ async def read_rooms():
 @app.post("/entries/", status_code=201)
 async def create_entry(room_id:int,code_id:int):
     room = models.Entry.create(room_id = room_id)
-    return room
+    return room.__data__ 
 
 @app.get("/entries/{entry_id}")
 async def read_entry(entry_id: int):
