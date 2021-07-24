@@ -60,15 +60,31 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     """ログイン中のユーザーを取得"""
     return current_user
 
+
+#Contest 関連
+
+@app.get("/users/{contest_id}")
+def read_user(contest_id: int):
+    return models.Contest.get_by_id(contest_id)
+    
 @app.get("/contests/")
 async def read_contests():
     ret = models.Contest.select()
     return [r for r in ret]
 
 
+@app.post("/contests/")
+async def create_contests(name:str,description:str):
+    contest = models.Contest.create(name=name,discription=discription)
+    
+    return contest
+
+
+#User 関連
 @app.get("/users/{user_id}")
 def read_user(user_id: int):
     return models.User.get_by_id(user_id)
+
 
 
 @app.post("/users/")
@@ -85,8 +101,6 @@ def read_users():
     ret = models.User.select()
     return [r for r in ret]
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
 
 
 # Code 関連
@@ -138,3 +152,17 @@ async def read_entry(code_id: int):
 async def read_entry():
     ret = models.Entry.select()
     return [r for r in ret]
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
