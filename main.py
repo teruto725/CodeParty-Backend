@@ -26,6 +26,10 @@ class Contest(BaseModel):
     class Config:
         orm_mode = True
 
+class UserIn(BaseModel):
+    name: str
+    password: str
+
 @app.post("/token", response_model=Token)
 async def login(form: OAuth2PasswordRequestForm = Depends()):
     """トークン発行"""
@@ -47,6 +51,22 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 @app.get("/contests/")
 async def read_contests():
     ret = models.Contest.select()
+    return [r for r in ret]
+
+# 単一のTodoを取得
+@app.get("/users/{user_id}")
+def read_todo(user_id: int):
+    return models.User.get_by_id(user_id)
+
+# Todoを登録
+@app.post("/users/")
+async def create_todo(user_in: UserIn):
+    user = models.User.create(name=user_in.name,password= user_in.password,is_admin = False)
+    return models.User.get_by_id(user.id)
+
+@app.get("/users/")
+def read_todos():
+    ret = models.User.select()
     return [r for r in ret]
 
 if __name__ == "__main__":

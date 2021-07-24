@@ -7,7 +7,7 @@ class User(Model):
     name = CharField(100)
     password = CharField(100)
     refresh_token = TextField(null=True)
-    is_admin = BooleanField(null=True)
+    is_admin = BooleanField()
 
     class Meta:
         database = db
