@@ -58,8 +58,6 @@ def get_current_user_from_token(token: str, token_type: str):
         raise HTTPException(status_code=401, detail='リフレッシュトークン不一致')
 
     return user
-
-
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """アクセストークンからログイン中のユーザーを取得"""
     return get_current_user_from_token(token, 'access_token')
