@@ -1,4 +1,4 @@
-from peewee import SqliteDatabase, Model, AutoField, CharField, TextField,BooleanField,IntegerField
+from peewee import SqliteDatabase, Model, AutoField, CharField, TextField,BooleanField,IntegerField ,DateTimeField
 
 db = SqliteDatabase('db.sqlite3')
 
@@ -24,8 +24,7 @@ class Code(Model):
     id = AutoField(primary_key=True)
     user_id = IntegerField()
     contest_id = IntegerField()
-    is_public = BooleanField()
-
+    time = DateTimeField
     class Meta:
         database = db
 

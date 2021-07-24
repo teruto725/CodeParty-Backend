@@ -5,6 +5,8 @@ from auth import get_current_user, get_current_user_with_refresh_token, create_t
 from starlette.middleware.cors import CORSMiddleware # 追加
 import models
 import uvicorn
+import datetime
+import shutil
 
 app = FastAPI()
 app.add_middleware(
@@ -41,7 +43,10 @@ class UserIn(BaseModel):
 async def login(form: OAuth2PasswordRequestForm = Depends()):
     """トークン発行"""
     user = authenticate(form.username, form.password)
-    return create_tokens(user.id)
+    ret_dict = {}
+    ret_dict["name"] = user.name
+    ret_dict["tokens"] = create_tokens(user.id)
+    return ret_dict
 
 
 @app.get("/refresh_token/", response_model=Token)
@@ -62,12 +67,12 @@ async def read_contests():
 
 # 単一のTodoを取得
 @app.get("/users/{user_id}")
-def read_todo(user_id: int):
+def read_user(user_id: int):
     return models.User.get_by_id(user_id)
 
 # Todoを登録
 @app.post("/users/")
-async def create_todo(user_in: UserIn):
+async def create_user(user_in: UserIn):
     user = models.User.create(name=user_in.name,password= user_in.password,is_admin = False)
     auth = authenticate(user.name, user.password)
     ret_dict = {}
@@ -76,13 +81,60 @@ async def create_todo(user_in: UserIn):
     return ret_dict
 
 @app.get("/users/")
-def read_todos():
+def read_users():
     ret = models.User.select()
     return [r for r in ret]
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
 
+
+# Code 関連
 @app.post("/codes/", status_code=201)
-async def create_codes(current_user: User = Depends(get_current_user), file: UploadFile = File(...)):
-    return {"filename": file.filename, 'properties': properties}
+async def create_codes(contest_id:int,current_user: User = Depends(get_current_user), file: UploadFile = File(...)):
+    
+    code = models.Code.create(user_id=current_user.id,contest_id= contest_id,time = datetime.datetime.now())
+
+    with open("/static/json/"+str(code.id)+".json", "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return code
+
+@app.get("/codes/{code_id}")
+def read_code(code_id: int):
+    return models.Code.get_by_id(code_id)
+
+@app.get("/codes/")
+async def read_codes():
+    ret = models.Code.select()
+    return [r for r in ret]
+
+##Room 関連
+@app.post("/rooms/", status_code=201)
+async def create_room(contest_id:int):
+    room = models.Room.create(contest_id =contest_id)
+    return room
+
+@app.get("/rooms/{code_id}")
+def read_room(code_id: int):
+    return models.Room.get_by_id(code_id)
+
+@app.get("/rooms/")
+async def read_rooms():
+    ret = models.Room.select()
+    return [r for r in ret]
+
+##Entry 関連
+@app.post("/entries/", status_code=201)
+async def create_entry(room_id:int,code_id:int):
+    room = models.Entry.create(room_id = room_id)
+    return room
+
+@app.get("/entries/{code_id}")
+def read_entry(code_id: int):
+    return models.Entry.get_by_id(code_id)
+
+@app.get("/entries/")
+async def read_entry():
+    ret = models.Entry.select()
+    return [r for r in ret]
