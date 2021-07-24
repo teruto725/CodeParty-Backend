@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from fastapi import Depends, FastAPI ,  File, UploadFile,Form
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
