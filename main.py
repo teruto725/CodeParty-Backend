@@ -39,6 +39,9 @@ class UserIn(BaseModel):
     name: str
     password: str
 
+def return_data(ret):
+    return ret
+
 @app.post("/token")
 async def login(user_in: UserIn):
     """トークン発行"""
@@ -70,7 +73,7 @@ def read_user(contest_id: int):
 @app.get("/contests/")
 async def read_contests():
     ret = models.Contest.select()
-    return [r for r in ret]
+    return [r.__data__ for r in ret]
 
 
 @app.post("/contests/")
@@ -99,7 +102,7 @@ async def create_user(user_in: UserIn):
 @app.get("/users/")
 def read_users():
     ret = models.User.select()
-    return [r for r in ret]
+    return [r.__data__ for r in ret]
 
 
 
@@ -121,7 +124,7 @@ async def read_code(code_id: int):
 @app.get("/codes/")
 async def read_codes():
     ret = models.Code.select()
-    return [r for r in ret]
+    return [r.__data__ for r in ret]
 
 ##Room 関連
 @app.post("/rooms/", status_code=201)
@@ -136,7 +139,7 @@ async def read_room(room_id: int):
 @app.get("/rooms/")
 async def read_rooms():
     ret = models.Room.select()
-    return [r for r in ret]
+    return [r.__data__ for r in ret]
 
 ##Entry 関連
 @app.post("/entries/", status_code=201)
@@ -151,7 +154,7 @@ async def read_entry(entry_id: int):
 @app.get("/entries/")
 async def read_entry():
     ret = models.Entry.select()
-    return [r for r in ret]
+    return [r.__data__ for r in ret]
 
 
 
