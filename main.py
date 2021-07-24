@@ -120,9 +120,9 @@ def read_users():
 
 # Code 
 @app.post("/codes/")
-async def create_codes(contest_id:int, file: bytes = File(...),current_user:User = Depends(get_current_user)):
+async def create_codes(contest_id:int,name:str, file: bytes = File(...),current_user:User = Depends(get_current_user)):
     print(current_user,contest_id,file)
-    code = models.Code.create(user_id=current_user.id,contest_id= contest_id,time = datetime.datetime.now())
+    code = models.Code.create(user_id=current_user.id,contest_id= contest_id,time = datetime.datetime.now(),name=name)
 
     with open("./static/submit/"+str(code.id)+".py", "wb") as buffer:
         shutil.copyfileobj(file, buffer)
@@ -133,6 +133,12 @@ async def create_codes(contest_id:int, file: bytes = File(...),current_user:User
 async def read_code(code_id: int):
     return models.Code.get_by_id(code_id).__data__ 
 
+
+@app.get("/codes/{code_id}/user")
+async def read_code_user(code_id: int):
+    code = models.Code.get_by_id(code_id)
+    user = models.User.get_by_id(code.user_id)
+    return user.__data__
 @app.get("/codes/")
 async def read_codes():
     ret = models.Code.select()
@@ -159,7 +165,7 @@ async def run_room(room_id: int):
     json = execute(["codeparty_simulator.players.sample2"]*4,room_id)
     return json
 
-##Entry 関連
+##Entry 
 @app.post("/entries/", status_code=201)
 async def create_entry(room_id:int,code_id:int):
     room = models.Entry.create(room_id = room_id)
@@ -173,6 +179,16 @@ async def read_entry(entry_id: int):
 async def read_entry():
     ret = models.Entry.select()
     return [r.__data__ for r in ret]
+
+# Debug 
+@app.post("/debug/codes/")
+async def create_codes(contest_id:int,name:str,user_id:int, file: UploadFile = File(...)):
+    code = models.Code.create(user_id=user_id,contest_id= contest_id,time = datetime.datetime.now(),name=name)
+
+    with open("./static/submit/"+str(code.id)+".py", "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return code.__data__ 
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

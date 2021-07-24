@@ -25,6 +25,7 @@ class Code(Model):
     user_id = IntegerField()
     contest_id = IntegerField()
     time = DateTimeField
+    name = CharField(100)
     class Meta:
         database = db
 
