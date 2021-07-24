@@ -96,7 +96,7 @@ def read_contest_rooms(contest_id: int):
     return [r.__data__ for r in ret]
 
 @app.get("/contests/{contest_id}/submitted")
-def read_contest_submitted(contest_id: int,User = Depends(get_current_user)):
+def read_contest_submitted(contest_id: int,current_user:User = Depends(get_current_user)):
     ret =  models.Code.select().where(models.Code.contest_id==contest_id and models.Code.user_id==current_user.id)
     return [r.__data__ for r in ret]
 
