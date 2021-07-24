@@ -4,12 +4,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth import get_current_user, get_current_user_with_refresh_token, create_tokens, authenticate
 from starlette.middleware.cors import CORSMiddleware
+from codeparty_simulator.exec import execute
 import models
 import uvicorn
 import datetime
 import shutil
-
-from codeparty_simulator.exec import execute
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
