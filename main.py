@@ -66,7 +66,7 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 @app.get("/users/{contest_id}")
 def read_user(contest_id: int):
     return models.Contest.get_by_id(contest_id)
-    
+
 @app.get("/contests/")
 async def read_contests():
     ret = models.Contest.select()
@@ -129,9 +129,9 @@ async def create_room(contest_id:int):
     room = models.Room.create(contest_id =contest_id)
     return room
 
-@app.get("/rooms/{code_id}")
-async def read_room(code_id: int):
-    return models.Room.get_by_id(code_id)
+@app.get("/rooms/{room_id}")
+async def read_room(room_id: int):
+    return models.Room.get_by_id(room_id)
 
 @app.get("/rooms/")
 async def read_rooms():
@@ -144,9 +144,9 @@ async def create_entry(room_id:int,code_id:int):
     room = models.Entry.create(room_id = room_id)
     return room
 
-@app.get("/entries/{code_id}")
-async def read_entry(code_id: int):
-    return models.Entry.get_by_id(code_id)
+@app.get("/entries/{entry_id}")
+async def read_entry(entry_id: int):
+    return models.Entry.get_by_id(entry_id)
 
 @app.get("/entries/")
 async def read_entry():
