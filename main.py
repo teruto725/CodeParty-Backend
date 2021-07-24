@@ -177,4 +177,4 @@ async def read_entry():
     return [r.__data__ for r in ret]
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
